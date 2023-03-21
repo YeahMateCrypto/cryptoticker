@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Crypto Ticker</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      @-webkit-keyframes ticker {
+        0% {
+          -webkit-transform: translate3d(0, 0, 0);
+          transform: translate3d(0, 0, 0);
+          visibility: visible;
+        }
+        100% {
+          -webkit-transform: translate3d(-100%, 0, 0);
+          transform: translate3d(-100%, 0, 0);
+        }
+      }
+      @keyframes ticker {
+        0% {
+          -webkit-transform: translate3d(0, 0, 0);
+          transform: translate3d(0, 0, 0);
+          visibility: visible;
+        }
+        100% {
+          -webkit-transform: translate3d(-100%, 0, 0);
+          transform: translate3d(-100%, 0, 0);
+        }
+      }
+      .ticker-wrap {
+        width: 100%;
+        overflow: hidden;
+        height: 60px;
+        background-color: rgba(0, 0, 0, 0.5);
+        padding-left: 100%;
+        box-sizing: content-box;
+      }
+      .ticker-wrap .ticker {
+        display: inline-block;
+        height: 4rem;
+        white-space: nowrap;
+        padding-right: 100%;
+        box-sizing: content-box;
+        -webkit-animation-iteration-count: infinite;
+        animation-iteration-count: infinite;
+        -webkit-animation-timing-function: linear;
+        animation-timing-function: linear;
+        -webkit-animation-name: ticker;
+        animation-name: ticker;
+        -webkit-animation-duration: 200s;
+        animation-duration: 200s;
+      }
+      .ticker-wrap .ticker__item {
+        display: inline-block;
+        padding: 0 2rem;
+        color: white;
+      }
+      .ticker__container {
+        display: flex;
+        height: 60px;
+        align-items: center;
+        font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande',
+          'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+      }
+      .coin__details {
+        margin-left: 10px;
+        display: flex;
+        flex-direction: column;
+      }
+      .coin__name {
+        font-weight: bold;
+      }
+      .ticker__item img {
+        height: 40px;
+        width: 40px;
+      }
+      body {
+        padding-bottom: 5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="ticker-wrap">
+      <div class="ticker">
+        <script>
+          async function getCoinData() {
+            let coinData = []
+            fetch(
+              'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false'
+            )
+              .then((resp) => {
+                return resp.json()
+              })
+              .then((data) => {
+                coinData = data
+                const tickerElement = document.querySelector('.ticker')
+                tickerElement.innerHTML = null
+                coinData.forEach((coin) => {
+                  const coinElement = document.createElement('div')
+                  coinElement.innerHTML = `<div class='ticker__container'><img src=${coin.image} /><div class='coin__details'><span class='coin__name'>${coin.name}</span><p>$${coin.current_price}</p></div></div>`
+                  coinElement.className = 'ticker__item'
+                  tickerElement.appendChild(coinElement)
+                })
+              })
+              .catch((err) => {
+                console.log(err)
+              })
+          }
+          getCoinData()
+          setInterval(() => {
+            getCoinData()
+          }, 100000)
+        </script>
+      </div>
+    </div>
+  </body>
+</html>
