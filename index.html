@@ -114,6 +114,15 @@
             getCoinData()
           }, 50000)
         </script>
+        
+        
+        Duplicate Ticker?
+        <script>
+		var ticker = document.querySelector('.ticker');
+		var clone = ticker.cloneNode(true);
+		ticker.parentNode.appendChild(clone);
+	</script>
+        
       </div>
     </div>
   </body>
